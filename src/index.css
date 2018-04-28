@@ -1,3 +1,6 @@
+body {
+  background: #222;
+}
 .box {
   display: inline-block;
   border: 1px solid black;
@@ -36,4 +39,5 @@
 
 h1, h3 {
   text-align: center;
+  color: white;
 }
