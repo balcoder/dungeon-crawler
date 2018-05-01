@@ -10,12 +10,28 @@ body {
   margin-bottom: -1px;
 }
 
-.off {
+.blank {
   background-color: lightgray;
 }
 
-.on {
+.user {
+  background-color: blue;
+}
+
+.health {
   background-color: green;
+}
+
+.enemy {
+  background-color: red;
+}
+
+.portal {
+  background-color: purple;
+}
+
+.weapon {
+  background-color: orange;
 }
 
 .box:hover {
@@ -36,6 +52,22 @@ body {
   box-shadow: 0px 0px 20px white;
   margin-top: 20px;
 }
+.player {
+  background-color: blue;
+}
+.health {
+  background-color: green;
+}
+.weapon {
+  background-color: yellow;
+}
+.enemy {
+  background-color: red;
+}
+.portal {
+  background-color: purple;
+}
+
 
 h1, h3 {
   text-align: center;

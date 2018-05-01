@@ -31,7 +31,32 @@ class Grid extends React.Component {
         let boxId = i + "_" + j;
         // initially all set to false in main now check what color to give box
         // depending on true or false
-        boxClass = this.props.gridFull[i][j] ? 'box on': 'box off';
+        //boxClass = this.props.gridFull[i][j] ? 'box on': 'box off';
+        console.log(this.props.gridFull[i][j].tileType);
+        switch (this.props.gridFull[i][j].tileType) {
+          case 'blank':
+            boxClass = 'box blank';
+            break;
+          case 'user':
+            boxClass = 'box user';
+            break;
+          case 'weapon':
+            boxClass = 'box weapon';
+            break;
+          case 'health':
+            boxClass = 'box health';
+            break;
+          case 'portal':
+            boxClass = 'box portal';
+            break;
+          case 'enemy':
+            boxClass = 'box enemy';
+            break;
+          default:
+            console.log('no color for box tile');
+
+        }
+
         // push jsx box component onto array
         rowsArr.push(
           <Box
@@ -64,34 +89,85 @@ class Main extends React.Component {
       level: 0,
       weapon: 'fist',
       weapons: ['fist','stick','knife','sword'],
+      position: {
+        userPosition: [],
+        healthPosition: [],
+        weaponPosition: [],
+        enemyPosition: [],
+        portalPosition: []
+      },
       // create the grid (two dimensional array) by filling a rows array using
       // map with false values
-      gridFull: Array(this.rows).fill().map(() => Array(this.cols).fill(false))
+      gridFull: Array(this.rows).fill().map(() => Array(this.cols).fill({tileType: "blank"}))
     }
   }
+
   selectBox = (row, col) => {
     // make a copy of the grid
     let gridCopy = arrayClone(this.state.gridFull);
     // set the box that's moved to the opposite
-    gridCopy[row][col] = ![row][col];
+    gridCopy[row][col] = !gridCopy[row][col];
     this.setState({
       gridFull: gridCopy
     });
   }
+  getRandomBox = () => {
+    // // make a copy of the grid
+    // let gridCopy = arrayClone(this.state.gridFull);
+    // // get a random box in the grid
+    // let randRow = Math.ceil(Math.random() * (gridCopy.length + 1) );
+    // let randCol = Math.ceil(Math.random() * (gridCopy[randRow].length + 1));
+    //
+    // // gridCopy[row][col] = !gridCopy[row][col];
+    // // this.setState({
+    // //   gridFull: gridCopy
+    // // });
+    // return [randRow,randCol];
+
+    // loop through each position array and get a random place on the grid
+    this.state.position.forEach(function(e) {
+      let isBlank = false;
+      do {
+        // make a copy of the grid
+        let gridCopy = arrayClone(this.state.gridFull);
+        // get a random box in the grid
+        let randRow = Math.ceil(Math.random() * (gridCopy.length + 1) );
+        let randCol = Math.ceil(Math.random() * (gridCopy[randRow].length + 1));
+        if (gridCopy[randRow][randCol].type === "blank") {
+          isBlank = true;
+        }
+      } while (isBlank === false);
+    })
+  }
+
+
+
   // set random boxes to health, weapons, enemies, portal to next level and user
   seed = () => {
-      let gridCopy = arrayClone(this.state.gridFull);
-  }
-  getRandomBox = (row, col) => {
     // make a copy of the grid
     let gridCopy = arrayClone(this.state.gridFull);
     // get a random box in the grid
     let randRow = Math.ceil(Math.random() * (gridCopy.length + 1) );
     let randCol = Math.ceil(Math.random() * (gridCopy[randRow].length + 1));
-    gridCopy[row][col] = ![row][col];
-    this.setState({
-      gridFull: gridCopy
-    });
+
+     gridCopy[randRow][randCol].tileType = 'user';
+    // this.setState({
+    //   gridFull: gridCopy
+    // });
+
+      this.setState({
+        userPosition: [randRow,randCol],
+        healthPosition: [],
+        weaponPosition: [],
+        enemyPosition: [],
+        portalPosition: [],
+        gridFull: gridCopy
+      })
+  }
+
+  componentDidMount() {
+  this.seed();
+
   }
   render() {
     return(
