@@ -89,17 +89,16 @@ class Main extends React.Component {
       level: 0,
       weapon: 'fist',
       weapons: ['fist','stick','knife','sword'],
-      position: {
-        userPosition: [],
-        healthPosition: [],
-        weaponPosition: [],
-        enemyPosition: [],
-        portalPosition: []
-      },
+      userPosition: [],
+      healthPosition: [],
+      weaponPosition: [],
+      enemyPosition: [],
+      portalPosition: [],
       // create the grid (two dimensional array) by filling a rows array using
-      // map with false values
+      // map with blank values
       gridFull: Array(this.rows).fill().map(() => Array(this.cols).fill({tileType: "blank"}))
     }
+    this.getRndBlankBox = this.getRndBlankBox.bind(this);
   }
 
   selectBox = (row, col) => {
@@ -111,62 +110,81 @@ class Main extends React.Component {
       gridFull: gridCopy
     });
   }
-  getRandomBox = () => {
-    // // make a copy of the grid
-    // let gridCopy = arrayClone(this.state.gridFull);
-    // // get a random box in the grid
-    // let randRow = Math.ceil(Math.random() * (gridCopy.length + 1) );
-    // let randCol = Math.ceil(Math.random() * (gridCopy[randRow].length + 1));
-    //
-    // // gridCopy[row][col] = !gridCopy[row][col];
-    // // this.setState({
-    // //   gridFull: gridCopy
-    // // });
-    // return [randRow,randCol];
 
-    // loop through each position array and get a random place on the grid
-    this.state.position.forEach(function(e) {
+  // returns array of row and col position
+  getRndBlankBox = () => {
       let isBlank = false;
       do {
         // make a copy of the grid
-        let gridCopy = arrayClone(this.state.gridFull);
+        var gridCopy = arrayClone(this.state.gridFull);
         // get a random box in the grid
-        let randRow = Math.ceil(Math.random() * (gridCopy.length + 1) );
-        let randCol = Math.ceil(Math.random() * (gridCopy[randRow].length + 1));
-        if (gridCopy[randRow][randCol].type === "blank") {
+        var randRow = Math.ceil(Math.random() * (gridCopy.length + 1) );
+        var randCol = Math.ceil(Math.random() * (gridCopy[randRow].length + 1));
+        if (gridCopy[randRow][randCol].tileType === "blank") {
           isBlank = true;
         }
       } while (isBlank === false);
-    })
+
+    return [randRow, randCol];
   }
 
 
 
   // set random boxes to health, weapons, enemies, portal to next level and user
+  // seed = (healthPos) => {
+  //
+  //
+  //   // make a copy of the grid
+  //   let gridCopy = arrayClone(this.state.gridFull);
+  //   // get a random box in the grid
+  //   let randRow = Math.ceil(Math.random() * (gridCopy.length + 1) );
+  //   let randCol = Math.ceil(Math.random() * (gridCopy[randRow].length + 1));
+  //
+  //    gridCopy[randRow][randCol].tileType = 'user';
+  //   // this.setState({
+  //   //   gridFull: gridCopy
+  //   // });
+  //
+  //     this.setState({
+  //       userPosition: [randRow,randCol],
+  //       healthPosition: healthPos,
+  //       weaponPosition: [],
+  //       enemyPosition: [],
+  //       portalPosition: [],
+  //       gridFull: gridCopy
+  //     })
+  // }
   seed = () => {
-    // make a copy of the grid
+
+    var user = this.getRndBlankBox();
+    var health = this.getRndBlankBox();
+    var weapon = this.getRndBlankBox();
+    var enemy = this.getRndBlankBox();
+    var portal = this.getRndBlankBox();
+
+    //make a copy of the grid
     let gridCopy = arrayClone(this.state.gridFull);
-    // get a random box in the grid
-    let randRow = Math.ceil(Math.random() * (gridCopy.length + 1) );
-    let randCol = Math.ceil(Math.random() * (gridCopy[randRow].length + 1));
+    // set tileType for css class definition
+    gridCopy[user[0]][user[1]].tileType = 'user';
+    gridCopy[health[0]][health[1]].tileType = 'health';
+    gridCopy[weapon[0]][weapon[1]].tileType = 'weapon';
+    gridCopy[enemy[0]][enemy[1]].tileType = 'enemy';
+    gridCopy[portal[0]][portal[1]].tileType = 'portal';
 
-     gridCopy[randRow][randCol].tileType = 'user';
-    // this.setState({
-    //   gridFull: gridCopy
-    // });
-
-      this.setState({
-        userPosition: [randRow,randCol],
-        healthPosition: [],
-        weaponPosition: [],
-        enemyPosition: [],
-        portalPosition: [],
-        gridFull: gridCopy
-      })
+    // update the state
+    this.setState({
+      userPosition:user,
+      healthPosition: health,
+      weaponPosition:weapon,
+      enemyPosition: enemy,
+      portalPosition: portal,
+      gridFull: gridCopy
+    });
   }
 
   componentDidMount() {
-  this.seed();
+  //let healthPos = this.getRndBlankBox();
+  this.seed(this.getRndBlankBox());
 
   }
   render() {
@@ -178,7 +196,7 @@ class Main extends React.Component {
           rows = {this.rows}
           cols = {this.cols}
           selectBox = {this.selectBox}
-          getRandomBox = {this.getRandomBox}
+          getRndBlankBox = {this.getRndBlankBox}
         />
         <h3>Level: {this.state.level} Health: {this.state.health} Weapon: {this.state.weapon}</h3>
       </div>
